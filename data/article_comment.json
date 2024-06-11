@@ -1,82 +1,50 @@
 [
-  {
-    "id": 1,
-    "article_id": 1,
-    "nickname": "mang00",
-    "content": "Quisque porta volutpat erat. Quisque erat eros, viverra eget, congue eget, semper rutrum, nulla. Nunc purus.",
-    "date_time": "2024-04-16 10:00:00",
-    "is_deleted": "n"
-  },
-  {
-    "id": 2,
-    "article_id": 1,
-    "nickname": "gom1234",
-    "content": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Proin risus. Praesent lectus.Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Proin risus. Praesent lectus.Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Proin risus. Praesent lectus.",
-    "date_time": "2024-04-16 10:12:00",
-    "is_deleted": "n"
-  },
-  {
-    "id": 3,
-    "article_id": 1,
-    "nickname": "hello",
-    "content": "Fusce posuere felis sed lacus. Morbi sem mauris, laoreet ut, rhoncus aliquet, pulvinar sed, nisl. Nunc rhoncus dui vel sem.",
-    "date_time": "2024-04-17 09:10:00",
-    "is_deleted": "n"
-  },
-  {
-    "id": 4,
-    "article_id": 1,
-    "nickname": "gom1234",
-    "content": "Praesent id massa id nisl venenatis lacinia. Aenean sit amet justo. Morbi ut odio.",
-    "date_time": "2024-04-17 14:24:00",
-    "is_deleted": "n"
-  },
-  {
-    "id": 5,
-    "article_id": 2,
-    "nickname": "gom1234",
-    "content": "Praesent id massa id nisl venenatis lacinia. Aenean sit amet justo. Morbi ut odio.",
-    "date_time": "2024-04-17 14:24:00",
-    "is_deleted": "n"
-  },
-  {
-    "id": 6,
-    "article_id": 2,
-    "nickname": "happy",
-    "content": "Praesent id massa id nisl venenatis lacinia. Aenean sit amet justo. Morbi ut odio.",
-    "date_time": "2024-04-17 14:24:00",
-    "is_deleted": "n"
-  },
-  {
-    "id": 7,
-    "article_id": 1,
-    "nickname": "mang00",
-    "date_time": "2024-05-14 14:57:27",
-    "content": "안녕하세요!!!",
-    "is_deleted": "y"
-  },
-  {
-    "id": 8,
-    "article_id": 1,
-    "nickname": "mang00",
-    "date_time": "2024-05-14 15:16:11",
-    "content": "댓글 등록!!!",
-    "is_deleted": "y"
-  },
-  {
-    "id": 9,
-    "article_id": 1,
-    "nickname": "mang00",
-    "date_time": "2024-05-16 15:01:12",
-    "content": "댓글!!!\n",
-    "is_deleted": "n"
-  },
-  {
-    "id": 10,
-    "article_id": 1,
-    "nickname": "mang00",
-    "date_time": "2024-05-16 15:02:09",
-    "content": "나는 왜 안돼?",
-    "is_deleted": "n"
-  }
-]
+    {
+      "id": 1,
+      "article_id": 1,
+      "nickname": "mang00",
+      "content": "Quisque porta volutpat erat. Quisque erat eros, viverra eget, congue eget, semper rutrum, nulla. Nunc purus.",
+      "date_time": "2024-04-16 10:00:00",
+      "is_deleted": "n"
+    },
+    {
+      "id": 2,
+      "article_id": 1,
+      "nickname": "gom1234",
+      "content": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Proin risus. Praesent lectus.Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Proin risus. Praesent lectus.Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Proin risus. Praesent lectus.",
+      "date_time": "2024-04-16 10:12:00",
+      "is_deleted": "n"
+    },
+    {
+      "id": 3,
+      "article_id": 1,
+      "nickname": "hello",
+      "content": "Fusce posuere felis sed lacus. Morbi sem mauris, laoreet ut, rhoncus aliquet, pulvinar sed, nisl. Nunc rhoncus dui vel sem.",
+      "date_time": "2024-04-17 09:10:00",
+      "is_deleted": "n"
+    },
+    {
+      "id": 4,
+      "article_id": 1,
+      "nickname": "gom1234",
+      "content": "Praesent id massa id nisl venenatis lacinia. Aenean sit amet justo. Morbi ut odio.",
+      "date_time": "2024-04-17 14:24:00",
+      "is_deleted": "n"
+    },
+    {
+      "id": 5,
+      "article_id": 2,
+      "nickname": "gom1234",
+      "content": "Praesent id massa id nisl venenatis lacinia. Aenean sit amet justo. Morbi ut odio.",
+      "date_time": "2024-04-17 14:24:00",
+      "is_deleted": "n"
+    },
+    {
+      "id": 6,
+      "article_id": 2,
+      "nickname": "happy",
+      "content": "Praesent id massa id nisl venenatis lacinia. Aenean sit amet justo. Morbi ut odio.",
+      "date_time": "2024-04-17 14:24:00",
+      "is_deleted": "n"
+    }
+  ]

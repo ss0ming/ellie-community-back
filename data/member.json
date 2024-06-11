@@ -1,128 +1,110 @@
 [
-  {
-    "id": 1,
-    "email": "hello0@devhub.com",
-    "password": "1234!qwer",
-    "nickname": "hello",
-    "created_at": "2024-04-02 12:00:00",
-    "modified_at": "2024-04-02 12:00:00",
-    "is_deleted": "n"
-  },
-  {
-    "id": 2,
-    "email": "happy12@facebook.com",
-    "password": "abcd!1234",
-    "nickname": "happy12",
-    "created_at": "2024-04-02 12:00:00",
-    "modified_at": "2024-04-02 12:00:00",
-    "is_deleted": "n"
-  },
-  {
-    "id": 3,
-    "email": "mang00@gmail.com",
-    "password": "mangomi12!",
-    "nickname": "mang00",
-    "created_at": "2024-04-02 12:00:00",
-    "modified_at": "2024-04-02 12:00:00",
-    "is_deleted": "n"
-  },
-  {
-    "id": 4,
-    "email": "gom1234@harvard.edu",
-    "password": "qwer1234!",
-    "nickname": "gom1234",
-    "created_at": "2024-04-02 12:00:00",
-    "modified_at": "2024-04-02 12:00:00",
-    "is_deleted": "n"
-  },
-  {
-    "id": 5,
-    "email": "suvegj4@naver.com",
-    "password": "asdf3456!",
-    "nickname": "u92VEGJ",
-    "created_at": "2024-04-02 12:00:00",
-    "modified_at": "2024-04-02 12:00:00",
-    "is_deleted": "n"
-  },
-  {
-    "id": 6,
-    "email": "bxemjgv5@naver.com",
-    "password": "asdf456!",
-    "nickname": "xE0MJgV",
-    "created_at": "2024-04-02 12:00:00",
-    "modified_at": "2024-04-02 12:00:00",
-    "is_deleted": "n"
-  },
-  {
-    "id": 7,
-    "email": "mnsbcmx6@naver.com",
-    "password": "!asdf4567",
-    "nickname": "9N3SB8cMx",
-    "created_at": "2024-04-02 12:00:00",
-    "modified_at": "2024-04-02 12:00:00",
-    "is_deleted": "n"
-  },
-  {
-    "id": 8,
-    "email": "idtn7@gmail.com",
-    "password": "hjvcb56!",
-    "nickname": "D1tN",
-    "created_at": "2024-04-02 12:00:00",
-    "modified_at": "2024-04-02 12:00:00",
-    "is_deleted": "n"
-  },
-  {
-    "id": 9,
-    "email": "mlgrpbmez8@gmail.com",
-    "password": "dsfg5674!",
-    "nickname": "LGr00PbMEZ",
-    "created_at": "2024-04-02 12:00:00",
-    "modified_at": "2024-04-02 12:00:00",
-    "is_deleted": "n"
-  },
-  {
-    "id": 10,
-    "email": "mhknb9@gmail.com",
-    "password": "sgdf!657",
-    "nickname": "H1K1Nb",
-    "created_at": "2024-04-02 12:00:00",
-    "modified_at": "2024-04-02 12:00:00",
-    "is_deleted": "n"
-  },
-  {
-    "id": 11,
-    "email": "test1234@gmail.com",
-    "password": "1234@updated",
-    "nickname": "updated",
-    "created_at": "2024-04-02 12:00:00",
-    "modified_at": "2024-04-02 12:00:00",
-    "is_deleted": "y"
-  },
-  {
-    "id": 12,
-    "email": "honggil@naver.com",
-    "password": "qwer1234!",
-    "nickname": "tokki",
-    "created_at": "2024-05-13 16:51:26",
-    "modified_at": "2024-05-13 16:51:26",
-    "is_deleted": "n"
-  },
-  {
-    "id": 13,
-    "email": "testuser1@naver.com",
-    "password": "qwer1234!",
-    "nickname": "somin",
-    "created_at": "2024-05-14 15:22:48",
-    "modified_at": "2024-05-14 15:22:48",
-    "is_deleted": "n"
-  },
-  {
-    "id": 14,
-    "email": "testuser@naver.com",
-    "password": "qwer1234!",
-    "nickname": "rabbit",
-    "created_at": "2024-05-14 15:25:12",
-    "modified_at": "2024-05-14 15:25:12",
-    "is_deleted": "n"
-  }
-]
+    {
+      "id": 1,
+      "email": "hello0@devhub.com",
+      "password": "1234!qwer",
+      "nickname": "hello",
+      "created_at": "2024-04-02 12:00:00",
+      "modified_at": "2024-04-02 12:00:00",
+      "is_deleted": "n"
+    },
+    {
+      "id": 2,
+      "email": "happy12@facebook.com",
+      "password": "abcd!1234",
+      "nickname": "happy12",
+      "created_at": "2024-04-02 12:00:00",
+      "modified_at": "2024-04-02 12:00:00",
+      "is_deleted": "n"
+    },
+    {
+      "id": 3,
+      "email": "mang00@gmail.com",
+      "password": "mangomi12!",
+      "nickname": "mang00",
+      "created_at": "2024-04-02 12:00:00",
+      "modified_at": "2024-04-02 12:00:00",
+      "is_deleted": "n"
+    },
+    {
+      "id": 4,
+      "email": "gom1234@harvard.edu",
+      "password": "qwer1234!",
+      "nickname": "gom1234",
+      "created_at": "2024-04-02 12:00:00",
+      "modified_at": "2024-04-02 12:00:00",
+      "is_deleted": "n"
+    },
+    {
+      "id": 5,
+      "email": "suvegj4@naver.com",
+      "password": "asdf3456!",
+      "nickname": "u92VEGJ",
+      "created_at": "2024-04-02 12:00:00",
+      "modified_at": "2024-04-02 12:00:00",
+      "is_deleted": "n"
+    },
+    {
+      "id": 6,
+      "email": "bxemjgv5@naver.com",
+      "password": "asdf456!",
+      "nickname": "xE0MJgV",
+      "created_at": "2024-04-02 12:00:00",
+      "modified_at": "2024-04-02 12:00:00",
+      "is_deleted": "n"
+    },
+    {
+      "id": 7,
+      "email": "mnsbcmx6@naver.com",
+      "password": "!asdf4567",
+      "nickname": "9N3SB8cMx",
+      "created_at": "2024-04-02 12:00:00",
+      "modified_at": "2024-04-02 12:00:00",
+      "is_deleted": "n"
+    },
+    {
+      "id": 8,
+      "email": "idtn7@gmail.com",
+      "password": "hjvcb56!",
+      "nickname": "D1tN",
+      "created_at": "2024-04-02 12:00:00",
+      "modified_at": "2024-04-02 12:00:00",
+      "is_deleted": "n"
+    },
+    {
+      "id": 9,
+      "email": "mlgrpbmez8@gmail.com",
+      "password": "dsfg5674!",
+      "nickname": "LGr00PbMEZ",
+      "created_at": "2024-04-02 12:00:00",
+      "modified_at": "2024-04-02 12:00:00",
+      "is_deleted": "n"
+    },
+    {
+      "id": 10,
+      "email": "mhknb9@gmail.com",
+      "password": "sgdf!657",
+      "nickname": "H1K1Nb",
+      "created_at": "2024-04-02 12:00:00",
+      "modified_at": "2024-04-02 12:00:00",
+      "is_deleted": "n"
+    },
+    {
+      "id": 11,
+      "email": "test1234@gmail.com",
+      "password": "1234@updated",
+      "nickname": "updated",
+      "created_at": "2024-04-02 12:00:00",
+      "modified_at": "2024-04-02 12:00:00",
+      "is_deleted": "y"
+    },
+    {
+      "id": 12,
+      "email": "honggil@naver.com",
+      "password": "qwer1234!",
+      "nickname": "tokki",
+      "created_at": "2024-05-13 16:51:26",
+      "modified_at": "2024-05-13 16:51:26",
+      "is_deleted": "n"
+    }
+  ]
