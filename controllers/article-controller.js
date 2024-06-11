@@ -1,280 +1,147 @@
-import fs from 'fs';
 import path from 'path';
+import db from '../config/mysql.js';
 
 const __dirname = path.resolve();
 
 // 게시글 목록 조회
-function getArticleList(req, res) {
-    fs.readFile(path.join(__dirname, 'data/article.json'), 'utf8', (err, articles) => {
-        if (err) {
-            console.error('Error reading file:', err);
-            return;
-        }
-        try {
-            const data = JSON.parse(articles).filter((article) => article.is_deleted === "n");
-            res.json(data);
-        } catch (error) {
-            console.error('Error parsing JSON:', error);
-            res.status(500).json({ error: 'Internal server error' });
-        }
-    });
+async function getArticleList(req, res) {
+    try {
+        const [articles] = await db.query('SELECT * FROM articles WHERE is_deleted = "n"');
+        res.json(articles);
+    } catch (error) {
+        console.error('Error fetching articles:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 }
 
 // 게시글 단일 조회
-function getArticle(req, res) {
-    fs.readFile(path.join(__dirname, 'data/article.json'), 'utf8', (err, articles) => {
-        if (err) {
-            console.error('Error reading file:', err);
-            return;
+async function getArticle(req, res) {
+    try {
+        const [article] = await db.query('SELECT * FROM articles WHERE id = ? AND is_deleted = "n"', [req.params.id]);
+        if (article.length === 0) {
+            return res.status(404).json({ message: "Not exist article" });
         }
-        try {
-            const data = JSON.parse(articles);
-            const article = data.find((article) => article.id === parseInt(req.params.id));
-
-            if (!article) {
-                res.status(404).json({ message: "Not exist article"});
-            } else if (article.is_deleted === "y") {
-                res.status(404).json({ message: "Deleted article"});
-            }
-
-            res.json(article);
-        } catch (error) {
-            console.error('Error parsing JSON:', error);
-            res.status(500).json({ error: 'Internal server error' });
-        }
-    });
+        res.json(article[0]);
+    } catch (error) {
+        console.error('Error fetching article:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 }
 
 // 게시글 생성
-function addArticle(req, res) {
+async function addArticle(req, res) {
     const { title, content } = req.body;
+    const date = new Date();
 
-    fs.readFile(path.join(__dirname, 'data/article.json'), 'utf8', (err, data) => {
-        if (err) {
-            console.error('Error reading file:', err);
-            return;
-        }
-
-        const articles = JSON.parse(data);
-        const dataLength = articles.length;
-
-        const newArticle = {
-            "id": dataLength+1,
-            "nickname": "mang00",
-            "date_time": formatDate(new Date()),
-            "title": title,
-            "content": content,
-            "likes": 0,
-            "view_count": 0,
-            "comment_count": 0,
-            "is_deleted": "n"
-        }
-
-        articles.push(newArticle);
-
-        fs.writeFile(path.join(__dirname, 'data/article.json'), JSON.stringify(articles, null, 2), err => {
-            if (err) {
-                console.error('Error writing file:', err);
-                return res.status(500).send('Internal Server Error');
-            }
-
-            res.json({ message: (dataLength+1) + ' article created' });
-        });
-    });
+    try {
+        const [article] = await db.query('INSERT INTO articles (title, content, image, likes, view_count, created_at, modified_at, is_deleted,  member_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
+                                        , [title, content, null, 0, 0, date, date, "n", 8]);
+        res.json({ message: "article created" })
+    } catch (error) {
+        console.error('Error adding article', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 }
 
 // 게시글 수정
-function updateArticle(req, res) {
-    const articleId = req.params.id;
+async function updateArticle(req, res) {
     const { title, content } = req.body;
 
-    fs.readFile(path.join(__dirname, 'data/article.json'), 'utf8', (err, data) => {
-        if (err) {
-            console.error('Error reading file:', err);
-            return res.status(500).json({ error: 'Internal Server Error' });
-        }
-
-        let articles = JSON.parse(data);
-
-        const articleIndex = articles.findIndex(article => article.id === parseInt(articleId));
-        if (articleIndex === -1) {
+    try {
+        const [article] = await db.query('UPDATE articles SET title = ?, content = ? WHERE id = ?', [title, content, req.params.id]);
+        if (article.affectedRows === 0) {
             return res.status(404).json({ error: 'Article not found' });
         }
-
-        articles[articleIndex].title = title;
-        articles[articleIndex].content = content;
-
-        fs.writeFile(path.join(__dirname, 'data/article.json'), JSON.stringify(articles, null, 2), err => {
-            if (err) {
-                console.error('Error writing file:', err);
-                return res.status(500).json({ error: 'Internal Server Error' });
-            }
-            res.json({ message: 'Article updated successfully' });
-        });
-    })
+        res.json({ message: 'Article updated successfully' });
+    } catch (error) {
+        console.error('Error updating articleL: ', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 }
 
 // 게시글 삭제
-function deleteArticle(req, res) {
+async function deleteArticle(req, res) {
     const articleId = req.params.id;
 
-    fs.readFile(path.join(__dirname, 'data/article.json'), 'utf8', (err, data) => {
-        if (err) {
-            console.error('Error reading file:', err);
-            return res.status(500).json({ error: 'Internal Server Error' });
-        }
-
-        let articles = JSON.parse(data);
-
-        const articleIndex = articles.findIndex(article => article.id === parseInt(articleId));
-        if (articleIndex === -1) {
+    try {
+        const [article] = await db.query('UPDATE articles SET is_deleted = "y" WHERE id = ?', [req.params.id]);
+        if (article.affectedRows === 0) {
             return res.status(404).json({ error: 'Article not found' });
         }
-
-        articles[articleIndex].is_deleted = "y";
-
-        fs.writeFile(path.join(__dirname, 'data/article.json'), JSON.stringify(articles, null, 2), err => {
-            if (err) {
-                console.error('Error writing file:', err);
-                return res.status(500).json({ error: 'Internal Server Error' });
-            }
-            res.json({ message: 'Article updated successfully' });
-        });
-    })
+        res.json({ message: 'Article deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting article: ', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 }
 
 // 댓글 목록 조회
-function getCommentList(req, res) {
-    fs.readFile(path.join(__dirname, 'data/article_comment.json'), 'utf8', (err, comments) => {
-        if (err) {
-            console.error('Error reading file:', err);
-            return;
-        }
-        try {
-            const data = JSON.parse(comments);
-            const selectedComments = data.filter((comment) => 
-                comment.article_id === parseInt(req.params.id) && comment.is_deleted === "n");
-            res.json(selectedComments);
-        } catch (error) {
-            console.error('Error parsing JSON:', error);
-            res.status(500).json({ error: 'Internal server error' });
-        }
-    });
+async function getCommentList(req, res) {
+    try {
+        const [comments] = await db.query('SELECT * FROM comments WHERE article_id = ? AND is_deleted = "n"', [req.params.id]);
+        res.json(comments);
+    } catch (error) {
+        console.error('Error fetching comments:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 }
 
 // 댓글 단일 조회
-function getComment(req, res) {
-    fs.readFile(path.join(__dirname, 'data/article_comment.json'), 'utf8', (err, comments) => {
-        if (err) {
-            console.error('Error reading file:', err);
-            return;
+async function getComment(req, res) {
+    try {
+        const [comment] = await db.query('SELECT * FROM comments WHERE id = ? AND is_deleted = "n"', [req.params.commentId]);
+        if (comment.length === 0) {
+            return res.status(404).json({ error: 'Comment not found' });
         }
-        try {
-            const data = JSON.parse(comments);
-            const selectedComment = data.find((comment) => comment.id === parseInt(req.params.commentId));
-            res.json(selectedComment);
-        } catch (error) {
-            console.error('Error parsing JSON:', error);
-            res.status(500).json({ error: 'Internal server error' });
-        }
-    });
+        res.json(comment[0]);
+    } catch (error) {
+        console.error('Error fetching comment:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 }
 
 // 댓글 생성
-function addComment(req, res) {
+async function addComment(req, res) {
     const { content } = req.body;
+    const date = new Date();
 
-    fs.readFile(path.join(__dirname, 'data/article_comment.json'), 'utf8', (err, data) => {
-        if (err) {
-            console.error('Error reading file:', err);
-            return;
-        }
-
-        const comments = JSON.parse(data);
-        const dataLength = comments.length;
-
-        const newComment = {
-            "id": dataLength+1,
-            "article_id": parseInt(req.params.id),
-            "nickname": "mang00",
-            "date_time": formatDate(new Date()),
-            "content": content,
-            "is_deleted": "n"
-        }
-
-        comments.push(newComment);
-
-        fs.writeFile(path.join(__dirname, 'data/article_comment.json'), JSON.stringify(comments, null, 2), err => {
-            if (err) {
-                console.error('Error writing file:', err);
-                return res.status(500).send('Internal Server Error');
-            }
-
-            res.json({
-                message: (dataLength+1) + ' comment created',
-                data: newComment
-            });
-        });
-    });
+    try {
+        const [comment] = await db.query('INSERT INTO comments (content, created_at, modified_at, is_deleted, member_id, article_id) VALUES (?, ?, ?, ?, ?, ?)', [content, date, date, "n", 4, req.params.id]);
+        res.json({ message: 'comment created' });
+    } catch (error) {
+        console.error('Error adding comment: ', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 }
 
 // 댓글 수정
-function updateComment(req, res) {
-    const commentId = req.params.commentId;
+async function updateComment(req, res) {
     const { content } = req.body;
 
-    fs.readFile(path.join(__dirname, 'data/article_comment.json'), 'utf8', (err, data) => {
-        if (err) {
-            console.error('Error reading file:', err);
-            return res.status(500).json({ error: 'Internal Server Error' });
+    try {
+        const [comment] = await db.query('UPDATE comments SET content = ? WHERE id = ?', [content, req.params.commentId]);
+        if (comment.affectedRows === 0) {
+            return res.status(404).json({ error: 'comment not found' });
         }
-
-        let comments = JSON.parse(data);
-
-        const commentIndex = comments.findIndex(comment => comment.id === parseInt(commentId));
-        if (commentIndex === -1) {
-            return res.status(404).json({ error: 'Comment not found' });
-        }
-
-        comments[commentIndex].content = content;
-
-        fs.writeFile(path.join(__dirname, 'data/article_comment.json'), JSON.stringify(comments, null, 2), err => {
-            if (err) {
-                console.error('Error writing file:', err);
-                return res.status(500).json({ error: 'Internal Server Error' });
-            }
-            res.json({ message: 'Comment updated successfully' });
-        });
-    })
+        res.json({ message: 'comment updated successfully' });
+    } catch (error) {
+        console.error('Error updating comment: ', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 }
 
 // 댓글 삭제
-function deleteComment(req, res) {
-    const commentId = req.params.commentId;
-
-    fs.readFile(path.join(__dirname, 'data/article_comment.json'), 'utf8', (err, data) => {
-        if (err) {
-            console.error('Error reading file:', err);
-            return res.status(500).json({ error: 'Internal Server Error' });
+async function deleteComment(req, res) {
+    try {
+        const [comment] = await db.query('UPDATE comments SET is_deleted = "y" WHERE id = ?', [req.params.commentId]);
+        if (comment.affectedRows === 0) {
+            return res.status(404).json({ error: 'Comment not found'});
         }
-
-        let comments = JSON.parse(data);
-
-        const commentIndex = comments.findIndex(comment => comment.id === parseInt(commentId));
-        if (commentIndex === -1) {
-            return res.status(404).json({ error: 'Comment not found' });
-        }
-
-        comments[commentIndex].is_deleted = "y";
-
-        fs.writeFile(path.join(__dirname, 'data/article_comment.json'), JSON.stringify(comments, null, 2), err => {
-            if (err) {
-                console.error('Error writing file:', err);
-                return res.status(500).json({ error: 'Internal Server Error' });
-            }
-            res.json({ message: 'Comment deleted successfully' });
-        });
-    })
+        res.json({ message: 'Comment deleting successfully' });
+    } catch (error) {
+        console.error('Error deleting comment: ', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 }
 
 function formatDate(date) {

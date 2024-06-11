@@ -16,7 +16,7 @@ router.post('/', addArticle);
 router.put('/:id', updateArticle);
 
 // 게시글 삭제
-router.post('/:id', deleteArticle);
+router.delete('/:id', deleteArticle);
 
 // 댓글 목록 조회
 router.get('/:id/comments', getCommentList);
@@ -31,6 +31,6 @@ router.post('/:id/comments', addComment);
 router.put('/:id/comments/:commentId', updateComment);
 
 // 댓글 삭제
-router.post('/:id/comments/:commentId', deleteComment);
+router.delete('/:id/comments/:commentId', deleteComment);
 
 export default router;
