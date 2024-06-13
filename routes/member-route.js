@@ -25,6 +25,6 @@ router.put('/:id/edit/password', editPassword);
 router.put('/:id/edit/nickname', editNickname);
 
 // 회원탈퇴
-router.post('/:id', deleteMember);
+router.delete('/:id', deleteMember);
 
 export default router;
