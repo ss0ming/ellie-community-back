@@ -1,5 +1,5 @@
 import express from 'express';
-import { addMember, emailDuplicationCheck, nicknameDuplicationCheck, login, getMember, editPassword, editNickname, deleteMember } from "../controllers/member-controller.js";
+import { addMember, emailDuplicationCheck, nicknameDuplicationCheck, login, logout, getMember, editPassword, editNickname, deleteMember } from "../controllers/member-controller.js";
 
 const router = express.Router();
 
@@ -14,6 +14,9 @@ router.post('/checkNickname', nicknameDuplicationCheck);
 
 // 로그인
 router.post('/login', login);
+
+// 로그아웃
+router.post('/logout', logout);
 
 // 회원 정보 조회
 router.get('/:id', getMember);

@@ -3,6 +3,7 @@ import memberRouter from './routes/member-route.js';
 import articleRouter from './routes/article-route.js';
 import cors from "cors";
 import bodyParser from 'body-parser';
+import session from 'express-session';
 
 const app = express();
 const port = 8000;
@@ -19,6 +20,14 @@ app.use(cors(corsOptions));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(bodyParser.text());
+
+// 세션 설정
+app.use(session({
+  secret: 'secret_key',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: false }
+}));
 
 app.use('/members', memberRouter);
 app.use('/articles', articleRouter);

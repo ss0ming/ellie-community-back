@@ -53,15 +53,28 @@ async function login(req, res) {
     const { email, password } = req.body;
 
     try {
-        const [article] = await db.query('SELECT * FROM members WHERE email = ? AND password = ?', [email, password]);
-        if (article.length === 0) {
+        const [member] = await db.query('SELECT id FROM members WHERE email = ? AND password = ?', [email, password]);
+        if (member.length === 0) {
             return res.status(404).json({ message: "Not exist member or not match id or password"});
         }
+        // 세션에 사용자 정보 저장
+        req.session.user = member[0];
+        console.log(req.session);
         res.status(200).json({ email: email });
     } catch (error) {
         console.error('Error during login: ', error);
         res.status(500).json({ error: 'Internal server error' });
     }
+}
+
+// 로그아웃
+function logout(req, res) {
+    req.session.destroy(error => {
+        if (error) {
+            return res.status(500).json({ error: 'Failed to logout' });
+        }
+        res.json({ message: 'Logout successfully'});
+    })
 }
 
 // 회원 정보 조회
@@ -140,4 +153,4 @@ function formatDate(date) {
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 
-export { addMember, emailDuplicationCheck, nicknameDuplicationCheck, login, getMember, editPassword, editNickname, deleteMember };
+export { addMember, emailDuplicationCheck, nicknameDuplicationCheck, login, logout, getMember, editPassword, editNickname, deleteMember };
