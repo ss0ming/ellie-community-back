@@ -1,12 +1,28 @@
-import path from 'path';
 import db from '../config/mysql.js';
-
-const __dirname = path.resolve();
 
 // 게시글 목록 조회
 async function getArticleList(req, res) {
     try {
-        const [articles] = await db.query('SELECT * FROM articles WHERE is_deleted = "n"');
+        const [articles] = await db.query(`
+            SELECT 
+                articles.*,
+                members.nickname,
+                members.profileImage
+            FROM 
+                articles 
+            LEFT JOIN 
+                members 
+            ON 
+                articles.member_id = members.id 
+            WHERE 
+                articles.is_deleted = 'n'
+            `);
+
+        articles.forEach(article => {
+            article.created_at = formatDate(article.created_at);
+            article.modified_at = formatDate(article.modified_at);
+        });
+
         res.json(articles);
     } catch (error) {
         console.error('Error fetching articles:', error);
@@ -17,10 +33,27 @@ async function getArticleList(req, res) {
 // 게시글 단일 조회
 async function getArticle(req, res) {
     try {
-        const [article] = await db.query('SELECT * FROM articles WHERE id = ? AND is_deleted = "n"', [req.params.id]);
+        const [article] = await db.query(`
+            SELECT 
+                articles.*,
+                members.id,
+                members.nickname,
+                members.profileImage
+            FROM 
+                articles 
+            LEFT JOIN 
+                members 
+            ON 
+                articles.member_id = members.id 
+            WHERE 
+                articles.id = ? AND articles.is_deleted = 'n'`, [req.params.id]);
         if (article.length === 0) {
             return res.status(404).json({ message: "Not exist article" });
         }
+
+        article[0].created_at = formatDate(article[0].created_at);
+        article[0].modified_at = formatDate(article[0].modified_at);
+
         res.json(article[0]);
     } catch (error) {
         console.error('Error fetching article:', error);
@@ -46,9 +79,10 @@ async function addArticle(req, res) {
 // 게시글 수정
 async function updateArticle(req, res) {
     const { title, content } = req.body;
+    const date = new Date();
 
     try {
-        const [article] = await db.query('UPDATE articles SET title = ?, content = ? WHERE id = ?', [title, content, req.params.id]);
+        const [article] = await db.query('UPDATE articles SET title = ?, content = ?, modified_at = ? WHERE id = ?', [title, content, date, req.params.id]);
         if (article.affectedRows === 0) {
             return res.status(404).json({ error: 'Article not found' });
         }
@@ -61,10 +95,10 @@ async function updateArticle(req, res) {
 
 // 게시글 삭제
 async function deleteArticle(req, res) {
-    const articleId = req.params.id;
+    const date = new Date();
 
     try {
-        const [article] = await db.query('UPDATE articles SET is_deleted = "y" WHERE id = ?', [req.params.id]);
+        const [article] = await db.query('UPDATE articles SET modified_at = ?, is_deleted = "y" WHERE id = ?', [date, req.params.id]);
         if (article.affectedRows === 0) {
             return res.status(404).json({ error: 'Article not found' });
         }
@@ -78,7 +112,26 @@ async function deleteArticle(req, res) {
 // 댓글 목록 조회
 async function getCommentList(req, res) {
     try {
-        const [comments] = await db.query('SELECT * FROM comments WHERE article_id = ? AND is_deleted = "n"', [req.params.id]);
+        const [comments] = await db.query(`
+        SELECT 
+          comments.*,
+          members.id,
+          members.nickname,
+          members.profileImage
+        FROM 
+          comments 
+        LEFT JOIN 
+          members 
+        ON 
+          comments.member_id = members.id 
+        WHERE 
+          comments.article_id = ? AND comments.is_deleted = 'n'`, [req.params.id]);
+
+        comments.forEach(comment => {
+            comment.created_at = formatDate(comment.created_at);
+            comment.modified_at = formatDate(comment.modified_at);
+        });
+
         res.json(comments);
     } catch (error) {
         console.error('Error fetching comments:', error);
@@ -89,10 +142,26 @@ async function getCommentList(req, res) {
 // 댓글 단일 조회
 async function getComment(req, res) {
     try {
-        const [comment] = await db.query('SELECT * FROM comments WHERE id = ? AND is_deleted = "n"', [req.params.commentId]);
+        const [comment] = await db.query(`
+            SELECT 
+                comments.*, 
+                members.nickname,
+                members.profileImage
+            FROM 
+                comments 
+            LEFT JOIN 
+                members 
+            ON 
+                comments.member_id = members.id 
+            WHERE 
+                comments.id = ? AND comments.is_deleted = 'n'`, [req.params.commentId]);
         if (comment.length === 0) {
             return res.status(404).json({ error: 'Comment not found' });
         }
+
+        comment[0].created_at = formatDate(comment[0].created_at);
+        comment[0].modified_at = formatDate(comment[0].modified_at);
+
         res.json(comment[0]);
     } catch (error) {
         console.error('Error fetching comment:', error);
@@ -119,7 +188,7 @@ async function updateComment(req, res) {
     const { content } = req.body;
 
     try {
-        const [comment] = await db.query('UPDATE comments SET content = ? WHERE id = ?', [content, req.params.commentId]);
+        const [comment] = await db.query('UPDATE comments SET content = ?, modified_at = ? WHERE id = ?', [content, date, req.params.commentId]);
         if (comment.affectedRows === 0) {
             return res.status(404).json({ error: 'comment not found' });
         }
@@ -132,8 +201,10 @@ async function updateComment(req, res) {
 
 // 댓글 삭제
 async function deleteComment(req, res) {
+    const date = new Date();
+
     try {
-        const [comment] = await db.query('UPDATE comments SET is_deleted = "y" WHERE id = ?', [req.params.commentId]);
+        const [comment] = await db.query('UPDATE comments SET modified_at = ?, is_deleted = "y" WHERE id = ?', [date, req.params.commentId]);
         if (comment.affectedRows === 0) {
             return res.status(404).json({ error: 'Comment not found'});
         }

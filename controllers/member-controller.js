@@ -58,9 +58,11 @@ async function login(req, res) {
             return res.status(404).json({ message: "Not exist member or not match id or password"});
         }
         // 세션에 사용자 정보 저장
-        req.session.user = member[0];
-        console.log(req.session);
-        res.status(200).json({ email: email });
+        req.session.user = { id: member[0].id };
+        console.log('Session after login:', req.session);
+        console.log(req.session.id);
+        req.session.save();
+        res.status(200).json({ id: member[0].id });
     } catch (error) {
         console.error('Error during login: ', error);
         res.status(500).json({ error: 'Internal server error' });
@@ -142,6 +144,17 @@ async function deleteMember(req, res) {
     }
 }
 
+// 세션 확인
+function checkSession(req, res) {
+    console.log('Session on check:', req.session);
+    console.log(req.session.id);
+    if (req.session.user && req.session.user.id) {
+        res.json({ id: req.session.user.id });
+    } else {
+        res.status(401).json({ message: 'Not authenticated' });
+    }
+}
+
 function formatDate(date) {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -153,4 +166,4 @@ function formatDate(date) {
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 
-export { addMember, emailDuplicationCheck, nicknameDuplicationCheck, login, logout, getMember, editPassword, editNickname, deleteMember };
+export { addMember, emailDuplicationCheck, nicknameDuplicationCheck, login, logout, getMember, editPassword, editNickname, deleteMember, checkSession };

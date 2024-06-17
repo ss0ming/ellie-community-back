@@ -4,10 +4,14 @@ import articleRouter from './routes/article-route.js';
 import cors from "cors";
 import bodyParser from 'body-parser';
 import session from 'express-session';
+import cookieParser from 'cookie-parser';
 
 const app = express();
 const port = 8000;
-const corsOptions = { origin: "http://localhost:3000" };
+const corsOptions = { 
+  origin: "http://localhost:3000",
+  credentials: true
+};
 
 app.get('/', (req, res) => {
   res.send('back server!!!');
@@ -26,7 +30,10 @@ app.use(session({
   secret: 'secret_key',
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: false }
+  cookie: { 
+    maxAge: 24 * 60 * 60 * 1000, // 1일
+    secure: false // HTTPS를 사용하는 경우 true로 설정
+  }
 }));
 
 app.use('/members', memberRouter);
