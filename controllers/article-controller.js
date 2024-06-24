@@ -66,9 +66,13 @@ async function addArticle(req, res) {
     const { title, content } = req.body;
     const date = new Date();
 
+    // 로그인한 사용자의 member_id 가져오기
+    console.log(req.session);
+    const member_id = req.session.user?.id;
+
     try {
         const [article] = await db.query('INSERT INTO articles (title, content, image, likes, view_count, created_at, modified_at, is_deleted,  member_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
-                                        , [title, content, null, 0, 0, date, date, "n", 8]);
+                                        , [title, content, null, 0, 0, date, date, "n", member_id]);
         res.json({ message: "article created" })
     } catch (error) {
         console.error('Error adding article', error);
@@ -114,10 +118,14 @@ async function getCommentList(req, res) {
     try {
         const [comments] = await db.query(`
         SELECT 
-          comments.*,
-          members.id,
-          members.nickname,
-          members.profileImage
+            comments.id AS comment_id,
+            comments.content,
+            comments.created_at,
+            comments.member_id,
+            comments.article_id,
+            members.id AS member_id,
+            members.nickname,
+            members.profileImage
         FROM 
           comments 
         LEFT JOIN 
@@ -129,7 +137,6 @@ async function getCommentList(req, res) {
 
         comments.forEach(comment => {
             comment.created_at = formatDate(comment.created_at);
-            comment.modified_at = formatDate(comment.modified_at);
         });
 
         res.json(comments);
@@ -141,10 +148,16 @@ async function getCommentList(req, res) {
 
 // 댓글 단일 조회
 async function getComment(req, res) {
+    console.log(req.params.commentId);
     try {
         const [comment] = await db.query(`
             SELECT 
-                comments.*, 
+                comments.id AS comment_id,
+                comments.content,
+                comments.created_at,
+                comments.member_id,
+                comments.article_id,
+                members.id AS member_id,
                 members.nickname,
                 members.profileImage
             FROM 
@@ -160,7 +173,6 @@ async function getComment(req, res) {
         }
 
         comment[0].created_at = formatDate(comment[0].created_at);
-        comment[0].modified_at = formatDate(comment[0].modified_at);
 
         res.json(comment[0]);
     } catch (error) {
@@ -174,9 +186,39 @@ async function addComment(req, res) {
     const { content } = req.body;
     const date = new Date();
 
+    // 로그인한 사용자의 member_id 가져오기
+    console.log(req.session);
+    const member_id = req.session.user?.id;
+
     try {
-        const [comment] = await db.query('INSERT INTO comments (content, created_at, modified_at, is_deleted, member_id, article_id) VALUES (?, ?, ?, ?, ?, ?)', [content, date, date, "n", 4, req.params.id]);
-        res.json({ message: 'comment created' });
+        const [addComment] = await db.query('INSERT INTO comments (content, created_at, modified_at, is_deleted, member_id, article_id) VALUES (?, ?, ?, ?, ?, ?)', [content, date, date, "n", member_id, req.params.id]);
+        
+        // 생성된 댓글의 ID 가져오기
+        const commentId = addComment.insertId;
+
+        // 생성된 댓글 조회
+        const [comment] = await db.query(`
+            SELECT 
+                comments.id AS comment_id,
+                comments.content,
+                comments.created_at,
+                comments.member_id,
+                comments.article_id,
+                members.id AS member_id,
+                members.nickname,
+                members.profileImage
+            FROM 
+                comments 
+            LEFT JOIN 
+                members 
+            ON 
+                comments.member_id = members.id 
+            WHERE 
+                comments.id = ?`, 
+            [commentId]
+        );
+
+        res.json(comment[0]);
     } catch (error) {
         console.error('Error adding comment: ', error);
         res.status(500).json({ error: 'Internal server error' });
@@ -186,6 +228,7 @@ async function addComment(req, res) {
 // 댓글 수정
 async function updateComment(req, res) {
     const { content } = req.body;
+    const date = new Date();
 
     try {
         const [comment] = await db.query('UPDATE comments SET content = ?, modified_at = ? WHERE id = ?', [content, date, req.params.commentId]);
